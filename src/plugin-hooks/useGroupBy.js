@@ -246,33 +246,7 @@ function useInstance(instance) {
               aggregations[column.aggregate]
 
         if (aggregateFn) {
-          // Get the columnValues to aggregate
-          const groupedValues = groupedRows.map(row => row.values[column.id])
-
-          // Get the columnValues to aggregate
-          const leafValues = leafRows.map(row => {
-            let columnValue = row.values[column.id]
-
-            if (!depth && column.aggregateValue) {
-              const aggregateValueFn =
-                typeof column.aggregateValue === 'function'
-                  ? column.aggregateValue
-                  : userAggregations[column.aggregateValue] ||
-                    aggregations[column.aggregateValue]
-
-              if (!aggregateValueFn) {
-                console.info({ column })
-                throw new Error(
-                  `React Table: Invalid column.aggregateValue option for column listed above`
-                )
-              }
-
-              columnValue = aggregateValueFn(columnValue, row, column)
-            }
-            return columnValue
-          })
-
-          values[column.id] = aggregateFn(leafValues, groupedValues)
+          values[column.id] = aggregateFn(column.id, leafRows, groupedRows)
         } else if (column.aggregate) {
           console.info({ column })
           throw new Error(

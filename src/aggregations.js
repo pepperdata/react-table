@@ -1,16 +1,17 @@
-export function sum(values, aggregatedValues) {
+export function sum(columnId, leafRows, childRows) {
   // It's faster to just add the aggregations together instead of
   // process leaf nodes individually
-  return aggregatedValues.reduce(
-    (sum, next) => sum + (typeof next === 'number' ? next : 0),
-    0
-  )
+  return childRows.reduce((sum, next) => {
+    const nextValue = next.values[columnId];
+    return sum + (typeof nextValue === 'number' ? nextValue : 0)
+  }, 0)
 }
 
-export function min(values) {
-  let min = values[0] || 0
+export function min(columnId, leafRows, childRows) {
+  let min = leafRows[0].values[columnId] || 0
 
-  values.forEach(value => {
+  leafRows.forEach((leafRow) => {
+    const value = leafRows.values[columnId];
     if (typeof value === 'number') {
       min = Math.min(min, value)
     }
@@ -19,10 +20,11 @@ export function min(values) {
   return min
 }
 
-export function max(values) {
-  let max = values[0] || 0
+export function max(columnId, leafRows, childRows) {
+  let max = leafRows[0].values[columnId] || 0
 
-  values.forEach(value => {
+  leafRows.forEach((leafRow) => {
+    const value = leafRows.values[columnId];
     if (typeof value === 'number') {
       max = Math.max(max, value)
     }
@@ -31,11 +33,13 @@ export function max(values) {
   return max
 }
 
-export function minMax(values) {
-  let min = values[0] || 0
-  let max = values[0] || 0
+export function minMax(columnId, leafRows, childRows) {
+  const firstValue = leafRows[0].values[columnId];
+  let min = firstValue || 0
+  let max = firstValue || 0
 
-  values.forEach(value => {
+  leafRows.forEach((leafRow) => {
+    const value = leafRows.values[columnId];
     if (typeof value === 'number') {
       min = Math.min(min, value)
       max = Math.max(max, value)
@@ -45,28 +49,31 @@ export function minMax(values) {
   return `${min}..${max}`
 }
 
-export function average(values) {
-  return sum(null, values) / values.length
+export function average(columnId, leafRows, childRows) {
+  return sum(columnId, null, childRows) / childRows.length
 }
 
-export function median(values) {
-  if (!values.length) {
+export function median(columnId, leafRows, childRows) {
+  if (!leafRows.length) {
     return null
   }
 
-  const mid = Math.floor(values.length / 2)
+  const mid = Math.floor(leafRows.length / 2)
+  const values = leafRows.map(({values}) => values[columnId]);
   const nums = [...values].sort((a, b) => a - b)
   return values.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2
 }
 
-export function unique(values) {
+export function unique(columnId, leafRows, childRows) {
+  const values = leafRows.map(({values}) => values[columnId]);
   return Array.from(new Set(values).values())
 }
 
-export function uniqueCount(values) {
+export function uniqueCount(columnId, leafRows, childRows) {
+  const values = leafRows.map(({values}) => values[columnId]);
   return new Set(values).size
 }
 
-export function count(values) {
-  return values.length
+export function count(columnId, leafRows, childRows) {
+  return leafRows.length
 }
