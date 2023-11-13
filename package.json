@@ -27,7 +27,7 @@
     "test:coverage": "yarn test:jest; open coverage/lcov-report/index.html",
     "build": "cross-env NODE_ENV=production rollup -c",
     "start": "rollup -c -w",
-    "prepare": "yarn build --verbose --stacktrace --debug --scan",
+    "prepare": "yarn build",
     "format": "prettier {src,src/**,examples/*/src,examples/*/src/**}/*.{md,js,jsx,tsx} --write",
     "docz:build": "docz build",
     "docz:dev": "docz dev",
