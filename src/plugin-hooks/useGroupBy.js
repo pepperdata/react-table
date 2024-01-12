@@ -101,19 +101,21 @@ function visibleColumns(
   {
     instance: {
       state: { groupBy },
+      shouldReorderGroupedColumns = false
     },
   }
 ) {
   // Sort grouped columns to the start of the column list
   // before the headers are built
+  if (shouldReorderGroupedColumns) {
+    const groupByColumns = groupBy
+      .map(g => columns.find(col => col.id === g))
+      .filter(Boolean)
 
-  const groupByColumns = groupBy
-    .map(g => columns.find(col => col.id === g))
-    .filter(Boolean)
+    const nonGroupByColumns = columns.filter(col => !groupBy.includes(col.id))
 
-  const nonGroupByColumns = columns.filter(col => !groupBy.includes(col.id))
-
-  columns = [...groupByColumns, ...nonGroupByColumns]
+    columns = [...groupByColumns, ...nonGroupByColumns]
+  }
 
   columns.forEach(column => {
     column.isGrouped = groupBy.includes(column.id)
