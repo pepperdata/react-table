@@ -11,7 +11,7 @@ export function min(columnId, leafRows, childRows) {
   let min = leafRows[0].values[columnId] || 0
 
   leafRows.forEach((leafRow) => {
-    const value = leafRows.values[columnId];
+    const value = leafRow.values[columnId];
     if (typeof value === 'number') {
       min = Math.min(min, value)
     }
@@ -24,7 +24,7 @@ export function max(columnId, leafRows, childRows) {
   let max = leafRows[0].values[columnId] || 0
 
   leafRows.forEach((leafRow) => {
-    const value = leafRows.values[columnId];
+    const value = leafRow.values[columnId];
     if (typeof value === 'number') {
       max = Math.max(max, value)
     }
@@ -39,7 +39,7 @@ export function minMax(columnId, leafRows, childRows) {
   let max = firstValue || 0
 
   leafRows.forEach((leafRow) => {
-    const value = leafRows.values[columnId];
+    const value = leafRow.values[columnId];
     if (typeof value === 'number') {
       min = Math.min(min, value)
       max = Math.max(max, value)
