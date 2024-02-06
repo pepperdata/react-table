@@ -273,7 +273,7 @@ function useInstance(instance) {
     const groupUpRecursively = (rows, depth = 0, parentId) => {
       // This is the last level, just return the rows
       if (depth === existingGroupBy.length) {
-        return rows.map((row) => ({ ...row, depth }))
+        return rows.map((row) => ({ ...row, depth, parentId }))
       }
 
       const columnId = existingGroupBy[depth]
@@ -299,6 +299,7 @@ function useInstance(instance) {
 
           const row = {
             id,
+            parentId,
             isGrouped: true,
             groupByID: columnId,
             groupByVal,
