@@ -221,7 +221,7 @@ function reducer(state, action, previousState, instance) {
 function useInstance(instance) {
   const {
     data,
-    rows,
+    flatRows,
     getHooks,
     plugins,
     rowsById,
@@ -242,8 +242,7 @@ function useInstance(instance) {
 
   const selectedFlatRows = React.useMemo(() => {
     const selectedFlatRows = []
-
-    rows.forEach(row => {
+    flatRows.forEach(row => {
       const isSelected = selectSubRows
         ? getRowIsSelected(row, selectedRowIds, getSubRows)
         : !!selectedRowIds[row.id]
@@ -256,7 +255,7 @@ function useInstance(instance) {
     })
 
     return selectedFlatRows
-  }, [rows, selectSubRows, selectedRowIds, getSubRows])
+  }, [flatRows, selectSubRows, selectedRowIds, getSubRows])
 
   let isAllRowsSelected = Boolean(
     Object.keys(nonGroupedRowsById).length && Object.keys(selectedRowIds).length
@@ -348,10 +347,14 @@ function getRowIsSelected(row, selectedRowIds, getSubRows) {
       if (someSelected && !allChildrenSelected) {
         return
       }
+      const isRowSelected = getRowIsSelected(subRow, selectedRowIds, getSubRows)
 
-      if (getRowIsSelected(subRow, selectedRowIds, getSubRows)) {
+      if (isRowSelected !== false) {
         someSelected = true
       } else {
+        allChildrenSelected = false
+      }
+      if (isRowSelected === null) {
         allChildrenSelected = false
       }
     })
