@@ -15,6 +15,7 @@ actions.resetSelectedRows = 'resetSelectedRows'
 actions.toggleAllRowsSelected = 'toggleAllRowsSelected'
 actions.toggleRowSelected = 'toggleRowSelected'
 actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
+actions.setMultipleRowsSelected = 'setMultipleRowsSelected'
 
 export const useRowSelect = hooks => {
   hooks.getToggleRowSelectedProps = [defaultGetToggleRowSelectedProps]
@@ -215,6 +216,32 @@ function reducer(state, action, previousState, instance) {
       selectedRowIds: newSelectedRowIds,
     }
   }
+
+  if (action.type === actions.setMultipleRowsSelected) {
+    const { value: setSelected, ids } = action
+
+    if (!ids || ids.length === 0) {
+      return state;
+    }
+
+    const selectedRowIds = Object.assign({}, state.selectedRowIds)
+
+    if (setSelected) {
+      ids.forEach(rowId => {
+        selectedRowIds[rowId] = true
+      })
+    } else {
+      ids.forEach(rowId => {
+        delete selectedRowIds[rowId]
+      })
+    }
+
+    return {
+      ...state,
+      selectedRowIds,
+    }
+  }
+
   return state
 }
 
@@ -298,6 +325,11 @@ function useInstance(instance) {
     [dispatch]
   )
 
+  const setMultipleRowsSelected = React.useCallback(
+    (ids, value) => dispatch({ type: actions.setMultipleRowsSelected, ids, value}),
+    [dispatch]
+  )
+
   const getInstance = useGetLatest(instance)
 
   const getToggleAllRowsSelectedProps = makePropGetter(
@@ -319,6 +351,7 @@ function useInstance(instance) {
     getToggleAllRowsSelectedProps,
     getToggleAllPageRowsSelectedProps,
     toggleAllPageRowsSelected,
+    setMultipleRowsSelected
   })
 }
 
