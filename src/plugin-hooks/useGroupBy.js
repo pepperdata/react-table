@@ -248,7 +248,7 @@ function useInstance(instance) {
               aggregations[column.aggregate]
 
         if (aggregateFn) {
-          values[column.id] = aggregateFn(column.id, leafRows, groupedRows)
+          values[column.id] = aggregateFn(column.id, leafRows, groupedRows, depth)
         } else if (column.aggregate) {
           console.info({ column })
           throw new Error(
