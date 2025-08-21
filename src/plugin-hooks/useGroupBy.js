@@ -295,7 +295,7 @@ function useInstance(instance) {
             ? flattenBy(groupedRows, 'leafRows')
             : groupedRows
 
-          const values = aggregateRowsToValues(leafRows, groupedRows, depth)
+          const values = aggregateRowsToValues(leafRows, subRows, depth)
 
           const row = {
             id,
